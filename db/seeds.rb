@@ -37,3 +37,5 @@ end
 TargetGroup.roots.each do |tg|
 	tg.countries = Country.all.sample(rand(3)+1)
 end
+
+User.create name: 'test', password: 'pass'
