@@ -1,10 +1,10 @@
 module Api
-	class CountriesController < ApiController
+	class CountriesController < BaseController
 
 		before_filter :get_country
 
 		def locations
-			if @country
+			if @country.present?
 				@data = { locations: @country.locations_based_on_pp }
 				@status = 200
 			else
@@ -14,7 +14,7 @@ module Api
 		end
 
 		def target_groups
-			if @country
+			if @country.present?
 				@data = { groups: @country.target_groups_based_on_pp }
 				@status = 200
 			else
@@ -26,10 +26,6 @@ module Api
 		private
 		def get_country
 			@country = Country.find_by_country_code(params[:country_code])
-		end
-
-		def required_params
-			params.permit(:country_code, :target_group_id, locations: [:id, :panel_size]).count == 3
 		end
 	end
 end

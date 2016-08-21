@@ -1,4 +1,5 @@
-class Api::ApiController < ApplicationController
+class Api::BaseController < ApplicationController
+	protect_from_forgery with: :null_session
 
 	before_action :destroy_session
 
@@ -9,15 +10,11 @@ class Api::ApiController < ApplicationController
 	end
 
 	def authenticate_user!
-		unless authenticate_from_token || authenticate_by_password
-			@status = 401
-			render_json_with_status
-			return
-		end
+		authenticate_from_token || authenticate_by_password
 	end
 
 	def render_json_with_status
-		if @data
+		if @data.present?
 			@data[:credentials] = {token: @current_user.auth_token, name: @current_user.name} if @current_user
 			render json: @data, status: @status
 		else
@@ -29,26 +26,21 @@ class Api::ApiController < ApplicationController
 	def authenticate_from_token
 		token, options = ActionController::HttpAuthentication::Token.token_and_options(request)
 
-		user_name = options.blank?? nil : options[:name]
-		user = user_name && User.find_by(name: user_name)
+		name = options.blank?? nil : options[:name]
+		user = name && User.find_by_name(name)
 
 		user && ActiveSupport::SecurityUtils.secure_compare(user.auth_token, token)
 	end
 
 	def authenticate_by_password
-		if user_params
-			user = User.find_by(name: user_params[:name])
-
-			@current_user = user
-
-			user && user.authenticate(user_params[:password])
-		else
-			false
+		authenticate_or_request_with_http_basic do |username, password|
+			if user = User.find_by_name(username)
+				@current_user = user
+				user.authenticate password
+			else
+				false
+			end
 		end
-	end
-
-	def user_params
-		params.permit(user: [:name, :password])[:user]
 	end
 
 end
