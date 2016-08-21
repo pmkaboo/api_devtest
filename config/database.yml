@@ -1,0 +1,18 @@
+default: &default
+  adapter: mysql2
+  username: root
+  password: kosice
+  pool: 5
+  timeout: 5000
+
+development:
+  <<: *default
+  database: api_devtest_devel
+
+test:
+  <<: *default
+  database: api_devtest_test
+
+production:
+  <<: *default
+  database: api_devtest_production
