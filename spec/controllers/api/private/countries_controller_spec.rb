@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-module Api::Private
+module Api::V1::Private
 	describe CountriesController do
 		before(:each) do
 			@user = FactoryGirl.create :user

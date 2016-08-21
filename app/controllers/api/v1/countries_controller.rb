@@ -1,4 +1,4 @@
-module Api
+module Api::V1
 	class CountriesController < BaseController
 
 		before_filter :get_country

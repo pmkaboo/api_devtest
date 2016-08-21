@@ -1,5 +1,5 @@
-module Api::Private
-	class CountriesController < Api::CountriesController
+module Api::V1::Private
+	class CountriesController < Api::V1::CountriesController
 
 		before_action :authenticate_user!
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-module Api::Public
+module Api::V1::Public
 	describe CountriesController do
 		context 'access without credential' do
 			it 'should allow' do
