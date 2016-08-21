@@ -55,7 +55,7 @@ module Api::V1::Private
 				@loc = FactoryGirl.create :location
 				@tg = FactoryGirl.create :target_group
 				request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Token.encode_credentials(@user.auth_token, name: @user.name)
-				ProviderPriceCalcs.stub(:type_a) { 10 }
+				allow(ProviderPriceCalcs).to receive(:type_a).and_return(10)
 			end
 
 			it 'should return price with valid params' do

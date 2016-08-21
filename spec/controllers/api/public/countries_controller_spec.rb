@@ -21,14 +21,8 @@ module Api::V1::Public
 			context 'GET locations' do
 				before(:each) do
 					@lg = FactoryGirl.create :location_group, panel_provider_id: @pp.id, country_id: @c.id
-					@lgc = FactoryGirl.create :location_group, country_id: @c.id
-					@lgpp = FactoryGirl.create :location_group, panel_provider_id: @pp.id
 					@loc = FactoryGirl.create :location
 					@loc.location_groups = *@lg
-					@locc = FactoryGirl.create :location
-					@locc.location_groups = *@lgc
-					@locpp = FactoryGirl.create :location
-					@locpp.location_groups = *@lgpp
 				end
 
 				it 'should return locations based on panel provider' do
@@ -39,7 +33,7 @@ module Api::V1::Public
 				end
 
 				it 'should return 404 for incorrect country code' do
-					get :locations, country_code: 'random'
+					get :locations, country_code: 'cc'
 					expect(response.status).to eq 404
 				end
 			end
@@ -48,20 +42,16 @@ module Api::V1::Public
 				before(:each) do
 					@tg = FactoryGirl.create :target_group, panel_provider_id: @pp.id
 					@tg.countries = *@c
-					@tgc = FactoryGirl.create :target_group
-					@tgc.countries = *@c
-					@tgpp = FactoryGirl.create :target_group, panel_provider_id: @pp.id
 				end
 
 				it 'should return target groups based on panel provider' do
 					get :target_groups, country_code: @c.country_code
-					expect(json['groups'].size).to eq 1
 					expect(json['groups']).to include @tg.attributes
 					expect(response.status).to eq 200
 				end
 
 				it 'should return 404 for incorrect country code' do
-					get :target_groups, country_code: 'random'
+					get :target_groups, country_code: 'cc'
 					expect(response.status).to eq 404
 				end
 			end
